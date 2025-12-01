@@ -16,33 +16,6 @@
         background: transparent; /* deja ver la cámara (passthrough) */
       }
     </style>
-
-    <!-- Componente para aplicar el poster como textura al GLB -->
-    <script>
-      AFRAME.registerComponent('apply-poster-material', {
-        schema: {
-          src: { type: 'selector' } // por ejemplo: #poster01
-        },
-        init: function () {
-          const el = this.el;
-          const data = this.data;
-
-          el.addEventListener('model-loaded', () => {
-            if (!data.src) {
-              console.warn('apply-poster-material: no se encontró la textura');
-              return;
-            }
-
-            // Forzar material único con el poster como textura
-            const texId = data.src.id;
-            el.setAttribute(
-              'material',
-              `shader: standard; src: #${texId}; metalness: 0; roughness: 0.9`
-            );
-          });
-        }
-      });
-    </script>
   </head>
 
   <body>
@@ -84,10 +57,10 @@
       <a-entity
         id="habitaculoModel"
         gltf-model="#habitaculo"
-        position="0 1.0 -1.5"   <!-- SUBÍ el Y a 1.0 -->
-        rotation="0 0 0"        <!-- ya lo ves derecho, así se queda -->
+        position="0 1.4 -1.8"  <!-- lo subí más -->
+        rotation="0 0 0"
         scale="1 1 1"
-        apply-poster-material="src: #poster01"
+        material="shader: standard; src: #poster01; metalness: 0; roughness: 0.9"
       ></a-entity>
 
       <!-- ====================== -->
@@ -96,7 +69,7 @@
       <a-entity
         id="contenedorCentral"
         gltf-model="#contenedor"
-        position="0 0.9 -1.2"   <!-- también lo subí -->
+        position="0 1.0 -1.2"  <!-- también más arriba -->
         rotation="0 0 0"
         scale="1 1 1"
         material="shader: standard; color: #ffffff; metalness: 0.2; roughness: 0.25"
