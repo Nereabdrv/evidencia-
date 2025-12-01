@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Habitáculo XR – Aceite</title>
+    <title>Habitáculo XR – Aceite2title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame 1.7.x -->
@@ -28,29 +28,18 @@
     >
       <!-- ASSETS -->
       <a-assets>
-        <!-- Opcional: solo si tus texturas NO van embebidas en el GLB -->
-        <img id="poster01" src="poster01.jpg">
-        <img id="poster02" src="poster02.jpg">
-
         <a-asset-item id="aceite" src="aceite.glb"></a-asset-item>
       </a-assets>
 
-      <!-- MANOS XR (solo visuales, sin agarrar nada) -->
-      <a-entity
-        id="leftHand"
-        hand-tracking-controls="hand: left"
-      ></a-entity>
-
-      <a-entity
-        id="rightHand"
-        hand-tracking-controls="hand: right"
-      ></a-entity>
+      <!-- MANOS XR (solo visuales) -->
+      <a-entity id="leftHand" hand-tracking-controls="hand: left"></a-entity>
+      <a-entity id="rightHand" hand-tracking-controls="hand: right"></a-entity>
 
       <!-- MODELO COMPLETO: mamparas + contenedor -->
       <a-entity
         id="escenaAceite"
         gltf-model="#aceite"
-        position="0 1.6 -1.6"
+        position="0 1.0 -1.6"   <!-- BAJÉ Y de 1.6 a 1.0 -->
         rotation="0 0 0"
         scale="1 1 1"
       ></a-entity>
