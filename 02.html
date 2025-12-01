@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Habitáculo XR – Mamparas + Contenedor2</title>
+    <title>Habitáculo XR – Mamparas + Contenedor3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame 1.7.x -->
@@ -35,11 +35,20 @@
             const url = imgEl.getAttribute('src');
             const textureLoader = new AFRAME.THREE.TextureLoader();
             const texture = textureLoader.load(url);
+            texture.encoding = AFRAME.THREE.sRGBEncoding;
 
             mesh.traverse((node) => {
               if (node.isMesh && node.material) {
-                node.material.map = texture;
-                node.material.needsUpdate = true;
+                if (Array.isArray(node.material)) {
+                  node.material.forEach((mat) => {
+                    if (!mat) return;
+                    mat.map = texture;
+                    mat.needsUpdate = true;
+                  });
+                } else {
+                  node.material.map = texture;
+                  node.material.needsUpdate = true;
+                }
               }
             });
           });
@@ -49,9 +58,9 @@
       // Ajusta el material del GLB para que parezca plástico brillante
       AFRAME.registerComponent('shiny-plastic', {
         schema: {
-          color: { type: 'color', default: '#ffffff' },
+          color: { type: 'color', default: '#ffd000' }, // amarillo por default
           metalness: { default: 0.2 },
-          roughness: { default: 0.25 }
+          roughness: { default: 0.2 }
         },
         init: function () {
           const el = this.el;
@@ -63,10 +72,20 @@
 
             mesh.traverse((node) => {
               if (node.isMesh && node.material) {
-                node.material.metalness = data.metalness;
-                node.material.roughness = data.roughness;
-                node.material.color = new AFRAME.THREE.Color(data.color);
-                node.material.needsUpdate = true;
+                if (Array.isArray(node.material)) {
+                  node.material.forEach((mat) => {
+                    if (!mat) return;
+                    mat.metalness = data.metalness;
+                    mat.roughness = data.roughness;
+                    mat.color = new AFRAME.THREE.Color(data.color);
+                    mat.needsUpdate = true;
+                  });
+                } else {
+                  node.material.metalness = data.metalness;
+                  node.material.roughness = data.roughness;
+                  node.material.color = new AFRAME.THREE.Color(data.color);
+                  node.material.needsUpdate = true;
+                }
               }
             });
           });
@@ -113,8 +132,8 @@
       <a-entity
         id="habitaculoModel"
         gltf-model="#habitaculo"
-        position="0 1.0 -1.5"
-        rotation="90 0 0"
+        position="0 1.6 -1.8"   <!-- SUBIDO -->
+        rotation="90 0 0"       <!-- orientación que te funcionaba -->
         scale="1 1 1"
         poster-texture="src: #poster01"
       ></a-entity>
@@ -125,10 +144,10 @@
       <a-entity
         id="contenedorCentral"
         gltf-model="#contenedor"
-        position="0 0.9 -1.2"
+        position="0 1.2 -1.2"   <!-- SUBIDO -->
         rotation="90 0 0"
         scale="1 1 1"
-        shiny-plastic="color: #ffffff; metalness: 0.2; roughness: 0.25"
+        shiny-plastic="color: #ffd000; metalness: 0.2; roughness: 0.2"
       ></a-entity>
 
       <!-- ====================== -->
