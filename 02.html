@@ -21,7 +21,7 @@
       // Aplica una textura (poster) a TODOS los meshes de un GLB
       AFRAME.registerComponent('poster-texture', {
         schema: {
-          src: { type: 'map' }  // #poster01
+          src: { type: 'selector' } // Ej: #poster01
         },
         init: function () {
           const el = this.el;
@@ -31,9 +31,14 @@
             const mesh = el.getObject3D('mesh');
             if (!mesh || !data.src) return;
 
+            const imgEl = data.src; // <img id="poster01">
+            const url = imgEl.getAttribute('src');
+            const textureLoader = new AFRAME.THREE.TextureLoader();
+            const texture = textureLoader.load(url);
+
             mesh.traverse((node) => {
               if (node.isMesh && node.material) {
-                node.material.map = data.src;
+                node.material.map = texture;
                 node.material.needsUpdate = true;
               }
             });
@@ -92,7 +97,6 @@
       <!-- ====================== -->
       <!--       MANOS XR         -->
       <!-- ====================== -->
-      <!-- Manos visibles, sin agarrar objetos -->
       <a-entity
         id="leftHand"
         hand-tracking-controls="hand: left"
@@ -109,8 +113,8 @@
       <a-entity
         id="habitaculoModel"
         gltf-model="#habitaculo"
-        position="0 1.0 -1.5"   <!-- posición donde ya se veía bien, solo más alto -->
-        rotation="0 0 0"
+        position="0 1.0 -1.5"
+        rotation="90 0 0"
         scale="1 1 1"
         poster-texture="src: #poster01"
       ></a-entity>
@@ -122,7 +126,7 @@
         id="contenedorCentral"
         gltf-model="#contenedor"
         position="0 0.9 -1.2"
-        rotation="0 0 0"
+        rotation="90 0 0"
         scale="1 1 1"
         shiny-plastic="color: #ffffff; metalness: 0.2; roughness: 0.25"
       ></a-entity>
