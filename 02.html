@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Habitáculo XR – Mamparas + Contenedor4</title>
+    <title>Habitáculo XR – Aceite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame 1.7.x -->
@@ -13,66 +13,9 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background: transparent;
+        background: transparent; /* deja ver la cámara (passthrough) */
       }
     </style>
-
-    <script>
-      // Textura tipo póster sobre el GLB
-      AFRAME.registerComponent('poster-texture', {
-        schema: {
-          src: { type: 'selector' } // Ej: #poster01
-        },
-        init: function () {
-          var el = this.el;
-          var data = this.data;
-
-          el.addEventListener('model-loaded', function () {
-            var mesh = el.getObject3D('mesh');
-            if (!mesh || !data.src) { return; }
-
-            var imgEl = data.src;        // <img id="poster01">
-            var url = imgEl.getAttribute('src');
-            var loader = new AFRAME.THREE.TextureLoader();
-            var texture = loader.load(url);
-
-            mesh.traverse(function (node) {
-              if (node.isMesh && node.material) {
-                node.material.map = texture;
-                node.material.needsUpdate = true;
-              }
-            });
-          });
-        }
-      });
-
-      // Plástico brillante
-      AFRAME.registerComponent('shiny-plastic', {
-        schema: {
-          color: { type: 'color', default: '#ffd000' }, // amarillo
-          metalness: { default: 0.2 },
-          roughness: { default: 0.2 }
-        },
-        init: function () {
-          var el = this.el;
-          var data = this.data;
-
-          el.addEventListener('model-loaded', function () {
-            var mesh = el.getObject3D('mesh');
-            if (!mesh) { return; }
-
-            mesh.traverse(function (node) {
-              if (node.isMesh && node.material) {
-                node.material.metalness = data.metalness;
-                node.material.roughness = data.roughness;
-                node.material.color = new AFRAME.THREE.Color(data.color);
-                node.material.needsUpdate = true;
-              }
-            });
-          });
-        }
-      });
-    </script>
   </head>
 
   <body>
@@ -85,14 +28,14 @@
     >
       <!-- ASSETS -->
       <a-assets>
+        <!-- Opcional: solo si tus texturas NO van embebidas en el GLB -->
         <img id="poster01" src="poster01.jpg">
         <img id="poster02" src="poster02.jpg">
 
-        <a-asset-item id="habitaculo" src="mamparas al fallo.glb"></a-asset-item>
-        <a-asset-item id="contenedor" src="monsters inc university.glb"></a-asset-item>
+        <a-asset-item id="aceite" src="aceite.glb"></a-asset-item>
       </a-assets>
 
-      <!-- MANOS XR (sin grabbable) -->
+      <!-- MANOS XR (solo visuales, sin agarrar nada) -->
       <a-entity
         id="leftHand"
         hand-tracking-controls="hand: left"
@@ -103,28 +46,17 @@
         hand-tracking-controls="hand: right"
       ></a-entity>
 
-      <!-- HABITÁCULO -->
+      <!-- MODELO COMPLETO: mamparas + contenedor -->
       <a-entity
-        id="habitaculoModel"
-        gltf-model="#habitaculo"
-        position="0 1.7 -1.8"   <!-- SUBIDO (cambia el 1.7 si lo quieres más alto) -->
+        id="escenaAceite"
+        gltf-model="#aceite"
+        position="0 1.6 -1.6"
         rotation="0 0 0"
         scale="1 1 1"
-        poster-texture="src: #poster01"
-      ></a-entity>
-
-      <!-- CONTENEDOR CENTRAL -->
-      <a-entity
-        id="contenedorCentral"
-        gltf-model="#contenedor"
-        position="0 1.3 -1.2"   <!-- SUBIDO -->
-        rotation="0 0 0"
-        scale="1 1 1"
-        shiny-plastic="color: #ffd000; metalness: 0.2; roughness: 0.2"
       ></a-entity>
 
       <!-- LUCES -->
-      <a-entity light="type: directional; intensity: 1" position="1 3 2"></a-entity>
+      <a-entity light="type: directional; intensity: 1.2" position="1 3 2"></a-entity>
       <a-entity light="type: ambient; intensity: 0.4"></a-entity>
     </a-scene>
   </body>
