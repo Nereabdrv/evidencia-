@@ -16,6 +16,58 @@
         background: transparent; /* deja ver la cámara (passthrough) */
       }
     </style>
+
+    <script>
+      // Aplica una textura (poster) a TODOS los meshes de un GLB
+      AFRAME.registerComponent('poster-texture', {
+        schema: {
+          src: { type: 'map' }  // #poster01
+        },
+        init: function () {
+          const el = this.el;
+          const data = this.data;
+
+          el.addEventListener('model-loaded', () => {
+            const mesh = el.getObject3D('mesh');
+            if (!mesh || !data.src) return;
+
+            mesh.traverse((node) => {
+              if (node.isMesh && node.material) {
+                node.material.map = data.src;
+                node.material.needsUpdate = true;
+              }
+            });
+          });
+        }
+      });
+
+      // Ajusta el material del GLB para que parezca plástico brillante
+      AFRAME.registerComponent('shiny-plastic', {
+        schema: {
+          color: { type: 'color', default: '#ffffff' },
+          metalness: { default: 0.2 },
+          roughness: { default: 0.25 }
+        },
+        init: function () {
+          const el = this.el;
+          const data = this.data;
+
+          el.addEventListener('model-loaded', () => {
+            const mesh = el.getObject3D('mesh');
+            if (!mesh) return;
+
+            mesh.traverse((node) => {
+              if (node.isMesh && node.material) {
+                node.material.metalness = data.metalness;
+                node.material.roughness = data.roughness;
+                node.material.color = new AFRAME.THREE.Color(data.color);
+                node.material.needsUpdate = true;
+              }
+            });
+          });
+        }
+      });
+    </script>
   </head>
 
   <body>
@@ -40,7 +92,7 @@
       <!-- ====================== -->
       <!--       MANOS XR         -->
       <!-- ====================== -->
-      <!-- Solo se muestran las manos, sin grab-controls -->
+      <!-- Manos visibles, sin agarrar objetos -->
       <a-entity
         id="leftHand"
         hand-tracking-controls="hand: left"
@@ -57,10 +109,10 @@
       <a-entity
         id="habitaculoModel"
         gltf-model="#habitaculo"
-        position="0 1.4 -1.8"  <!-- lo subí más -->
+        position="0 1.0 -1.5"   <!-- posición donde ya se veía bien, solo más alto -->
         rotation="0 0 0"
         scale="1 1 1"
-        material="shader: standard; src: #poster01; metalness: 0; roughness: 0.9"
+        poster-texture="src: #poster01"
       ></a-entity>
 
       <!-- ====================== -->
@@ -69,10 +121,10 @@
       <a-entity
         id="contenedorCentral"
         gltf-model="#contenedor"
-        position="0 1.0 -1.2"  <!-- también más arriba -->
+        position="0 0.9 -1.2"
         rotation="0 0 0"
         scale="1 1 1"
-        material="shader: standard; color: #ffffff; metalness: 0.2; roughness: 0.25"
+        shiny-plastic="color: #ffffff; metalness: 0.2; roughness: 0.25"
       ></a-entity>
 
       <!-- ====================== -->
