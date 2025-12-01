@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Habitáculo XR – Mamparas + Contenedor3</title>
+    <title>Habitáculo XR – Mamparas + Contenedor2</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame 1.7.x -->
@@ -13,79 +13,60 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background: transparent; /* deja ver la cámara (passthrough) */
+        background: transparent;
       }
     </style>
 
     <script>
-      // Aplica una textura (poster) a TODOS los meshes de un GLB
+      // Textura tipo póster sobre el GLB
       AFRAME.registerComponent('poster-texture', {
         schema: {
           src: { type: 'selector' } // Ej: #poster01
         },
         init: function () {
-          const el = this.el;
-          const data = this.data;
+          var el = this.el;
+          var data = this.data;
 
-          el.addEventListener('model-loaded', () => {
-            const mesh = el.getObject3D('mesh');
-            if (!mesh || !data.src) return;
+          el.addEventListener('model-loaded', function () {
+            var mesh = el.getObject3D('mesh');
+            if (!mesh || !data.src) { return; }
 
-            const imgEl = data.src; // <img id="poster01">
-            const url = imgEl.getAttribute('src');
-            const textureLoader = new AFRAME.THREE.TextureLoader();
-            const texture = textureLoader.load(url);
-            texture.encoding = AFRAME.THREE.sRGBEncoding;
+            var imgEl = data.src;        // <img id="poster01">
+            var url = imgEl.getAttribute('src');
+            var loader = new AFRAME.THREE.TextureLoader();
+            var texture = loader.load(url);
 
-            mesh.traverse((node) => {
+            mesh.traverse(function (node) {
               if (node.isMesh && node.material) {
-                if (Array.isArray(node.material)) {
-                  node.material.forEach((mat) => {
-                    if (!mat) return;
-                    mat.map = texture;
-                    mat.needsUpdate = true;
-                  });
-                } else {
-                  node.material.map = texture;
-                  node.material.needsUpdate = true;
-                }
+                node.material.map = texture;
+                node.material.needsUpdate = true;
               }
             });
           });
         }
       });
 
-      // Ajusta el material del GLB para que parezca plástico brillante
+      // Plástico brillante
       AFRAME.registerComponent('shiny-plastic', {
         schema: {
-          color: { type: 'color', default: '#ffd000' }, // amarillo por default
+          color: { type: 'color', default: '#ffd000' }, // amarillo
           metalness: { default: 0.2 },
           roughness: { default: 0.2 }
         },
         init: function () {
-          const el = this.el;
-          const data = this.data;
+          var el = this.el;
+          var data = this.data;
 
-          el.addEventListener('model-loaded', () => {
-            const mesh = el.getObject3D('mesh');
-            if (!mesh) return;
+          el.addEventListener('model-loaded', function () {
+            var mesh = el.getObject3D('mesh');
+            if (!mesh) { return; }
 
-            mesh.traverse((node) => {
+            mesh.traverse(function (node) {
               if (node.isMesh && node.material) {
-                if (Array.isArray(node.material)) {
-                  node.material.forEach((mat) => {
-                    if (!mat) return;
-                    mat.metalness = data.metalness;
-                    mat.roughness = data.roughness;
-                    mat.color = new AFRAME.THREE.Color(data.color);
-                    mat.needsUpdate = true;
-                  });
-                } else {
-                  node.material.metalness = data.metalness;
-                  node.material.roughness = data.roughness;
-                  node.material.color = new AFRAME.THREE.Color(data.color);
-                  node.material.needsUpdate = true;
-                }
+                node.material.metalness = data.metalness;
+                node.material.roughness = data.roughness;
+                node.material.color = new AFRAME.THREE.Color(data.color);
+                node.material.needsUpdate = true;
               }
             });
           });
@@ -102,9 +83,7 @@
       vr-mode-ui="enabled: false"
       embedded
     >
-      <!-- ====================== -->
-      <!--        ASSETS          -->
-      <!-- ====================== -->
+      <!-- ASSETS -->
       <a-assets>
         <img id="poster01" src="poster01.jpg">
         <img id="poster02" src="poster02.jpg">
@@ -113,9 +92,7 @@
         <a-asset-item id="contenedor" src="monsters inc university.glb"></a-asset-item>
       </a-assets>
 
-      <!-- ====================== -->
-      <!--       MANOS XR         -->
-      <!-- ====================== -->
+      <!-- MANOS XR (sin grabbable) -->
       <a-entity
         id="leftHand"
         hand-tracking-controls="hand: left"
@@ -126,33 +103,27 @@
         hand-tracking-controls="hand: right"
       ></a-entity>
 
-      <!-- ====================== -->
-      <!--   HABITÁCULO (GLB)     -->
-      <!-- ====================== -->
+      <!-- HABITÁCULO -->
       <a-entity
         id="habitaculoModel"
         gltf-model="#habitaculo"
-        position="0 1.6 -1.8"   <!-- SUBIDO -->
-        rotation="90 0 0"       <!-- orientación que te funcionaba -->
+        position="0 1.7 -1.8"   <!-- SUBIDO (cambia el 1.7 si lo quieres más alto) -->
+        rotation="0 0 0"
         scale="1 1 1"
         poster-texture="src: #poster01"
       ></a-entity>
 
-      <!-- ====================== -->
-      <!-- CONTENEDOR CENTRAL     -->
-      <!-- ====================== -->
+      <!-- CONTENEDOR CENTRAL -->
       <a-entity
         id="contenedorCentral"
         gltf-model="#contenedor"
-        position="0 1.2 -1.2"   <!-- SUBIDO -->
-        rotation="90 0 0"
+        position="0 1.3 -1.2"   <!-- SUBIDO -->
+        rotation="0 0 0"
         scale="1 1 1"
         shiny-plastic="color: #ffd000; metalness: 0.2; roughness: 0.2"
       ></a-entity>
 
-      <!-- ====================== -->
-      <!--         LUCES          -->
-      <!-- ====================== -->
+      <!-- LUCES -->
       <a-entity light="type: directional; intensity: 1" position="1 3 2"></a-entity>
       <a-entity light="type: ambient; intensity: 0.4"></a-entity>
     </a-scene>
